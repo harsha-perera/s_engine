@@ -13,6 +13,7 @@ import java.util.Vector;
  * Data structure to hold link data of pages whilst a web crawl is underway.
  */
 public class WebGraph {
+	// TODO: Update to make this class thread safe
 	HashMap<String, Vector<String>> outgoingUrls;
 	HashMap<String, Vector<String>> incomingUrls;
 	Vector<String> urlList; 

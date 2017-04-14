@@ -1,6 +1,7 @@
 package pagerank;
 
-import java.util.HashMap;
+import java.util.Set;
+import java.util.Vector;
 import java.util.regex.Pattern;
 
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -17,6 +18,18 @@ public class PageRankCrawler extends WebCrawler {
 	
 	private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg|pdf|txt"
 			+ "|png|mp3|mp3|zip|gz))$");
+	
+	private WebGraph webGraph;
+	
+	
+
+	/**
+	 * @param webGraph
+	 */
+	public PageRankCrawler(WebGraph webGraph) {
+		super();
+		this.webGraph = webGraph;
+	}
 
 	@Override
 	public boolean shouldVisit(Page referringPage, WebURL url) {
@@ -34,17 +47,13 @@ public class PageRankCrawler extends WebCrawler {
 		System.out.println("URL: " + url);
 
 		HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
-		// String text = htmlParseData.getText();
-		String html = htmlParseData.getHtml();
 
-		HashMap<String, String> map = new HashMap<>();
-		map.put("URL", url);
-
-		// Set<WebURL> links = htmlParseData.getOutgoingUrls();
-		//
-		// System.out.println("Text length: " + text.length());
-		// System.out.println("Html length: " + html.length());
-		// System.out.println("Number of outgoing links: " + links.size());		
+		Set<WebURL> links = htmlParseData.getOutgoingUrls();
+		Vector<String> outgoingLinks = new Vector<>(links.size());
+		for (WebURL webUrl : links) {
+			outgoingLinks.add(webUrl.getURL());
+		}
+		this.webGraph.addPage(url, outgoingLinks);		
 	}
 	
 	
