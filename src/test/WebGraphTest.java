@@ -9,7 +9,7 @@ import java.util.Vector;
 
 import org.junit.Test;
 
-import pagerank.WebGraph;
+import irdm.project.pagerank.WebGraph;
 
 /**
  * @author Harsha Perera

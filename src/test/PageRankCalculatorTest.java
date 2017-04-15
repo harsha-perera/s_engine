@@ -10,8 +10,8 @@ import java.util.Vector;
 
 import org.junit.Test;
 
-import pagerank.WebGraph;
-import pagerank.PageRankCalculator;
+import irdm.project.pagerank.PageRankCalculator;
+import irdm.project.pagerank.WebGraph;
 
 
 /**

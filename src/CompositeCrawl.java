@@ -5,10 +5,10 @@ import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
+import irdm.project.pagerank.PageRankCalculator;
+import irdm.project.pagerank.PageRankCrawlerFactory;
+import irdm.project.pagerank.WebGraph;
 import lemurproject.indri.IndexEnvironment;
-import pagerank.PageRankCalculator;
-import pagerank.PageRankCrawlerFactory;
-import pagerank.WebGraph;
 
 /**
  * 
