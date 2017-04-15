@@ -3,9 +3,9 @@
  */
 package pagerank;
 
-import java.util.HashMap;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Harsha Perera
@@ -13,31 +13,29 @@ import java.util.Vector;
  * Data structure to hold link data of pages whilst a web crawl is underway.
  */
 public class WebGraph {
-	// TODO: Update to make this class thread safe
-	HashMap<String, Vector<String>> outgoingUrls;
-	HashMap<String, Vector<String>> incomingUrls;
-	Vector<String> urlList; 
 
+	ConcurrentHashMap<String, Vector<String>> outgoingUrls;
+	ConcurrentHashMap<String, Vector<String>> incomingUrls;
 	
 	public WebGraph() {
 		super();
-		this.outgoingUrls = new HashMap<>();
-		this.incomingUrls = new HashMap<>();
-		this.urlList = new Vector<>();
+		this.outgoingUrls = new ConcurrentHashMap<>();
+		this.incomingUrls = new ConcurrentHashMap<>();
 	}
 
 
 	public void addPage(String url, Vector<String> outgoingLinks){
 		outgoingUrls.put(url, outgoingLinks);
 		for (String targetUrl : outgoingLinks) {
-			if(!outgoingUrls.containsKey(targetUrl)){
+			outgoingUrls.computeIfAbsent(targetUrl, k -> new Vector<>());
+			/*if(!outgoingUrls.containsKey(targetUrl)){
 				outgoingUrls.put(targetUrl, new Vector<>());
-			}
-			Vector<String> incomingUrlsForTarget = incomingUrls.get(targetUrl);
-			if(incomingUrlsForTarget == null){
+			}*/
+			Vector<String> incomingUrlsForTarget = incomingUrls.computeIfAbsent(targetUrl, k -> new Vector<>());
+			/*if(incomingUrlsForTarget == null){
 				incomingUrlsForTarget = new Vector<>();
 				incomingUrls.put(targetUrl, incomingUrlsForTarget);
-			}
+			}*/			
 			incomingUrlsForTarget.add(url);
 		}
 	}
