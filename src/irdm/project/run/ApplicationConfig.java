@@ -24,6 +24,6 @@ public class ApplicationConfig {
 	public static int PageRankMaxIterations = 10;
 	public static double PageRankTeleportProbability = 0.15;
 	public static double PageRankWeighting = 0.5;
-	public static String PageRankScoreFilePath = IndexPath + File.separator + "PageRankScores.dat";
+	public static String PageRankScoreFilePath = IndexPath + File.separator + "pagerankscores.dat";
 
 }
