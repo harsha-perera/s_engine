@@ -52,12 +52,7 @@ public class IndexBuilder {
 	private int linkdepth;
 	
 	public IndexBuilder(String crawlPath, String indexPath, String url, int linkdepth ){
-		if(indexPath != null){
-			ApplicationSetup.setProperty("terrier.home", indexPath);
-			ApplicationSetup.setProperty("terrier.index.path", indexPath);
-			this.indexPath = indexPath;
-		}	
-		
+		this.indexPath = indexPath;		
 		this.crawlPath = crawlPath;
 		this.url = url;
 		this.linkdepth = linkdepth;

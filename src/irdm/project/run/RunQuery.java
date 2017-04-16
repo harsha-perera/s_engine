@@ -35,8 +35,8 @@ public class RunQuery {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
-		ResultSet result = search("products");
+		TerrierInitialiser.InitTerrier();
+		ResultSet result = search("product");
 
 		// String[] displayKeys = result.getMetaKeys(); // url, title, body
 		// String[][] meta = new String[displayKeys.length][];
