@@ -9,8 +9,11 @@ import org.terrier.querying.SearchRequest;
 import org.terrier.structures.Index;
 import org.terrier.utility.ApplicationSetup;
 
+import irdm.project.pagerank.TerrierPageRankScoreModifier;
+
 /**
  * @author Shruti Sinha
+ * @author Harsha Perera
  *
  */
 public class RunQuery {
@@ -21,13 +24,16 @@ public class RunQuery {
 		ApplicationSetup.setProperty("querying.postfilters.controls","decorate:SimpleDecorate,site:SiteFilter,scope:Scope");
 		ApplicationSetup.setProperty("querying.default.controls","");
 		ApplicationSetup.setProperty("querying.allowed.controls","scope,qe,qemodel,start,end,site,scope");
+		// Document Score Modifier for PageRank
+		ApplicationSetup.setProperty("matching.dsms",TerrierPageRankScoreModifier.class.getName());		
 	}
 	
 
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) {		
+		
 		ResultSet result = search("field");
 		
 //		String[] displayKeys = result.getMetaKeys(); // url, title, body
@@ -48,7 +54,7 @@ public class RunQuery {
 	}
 	
 	public static ResultSet search(String query) {
-		Index index = Index.createIndex("C:/TerrierSearchEngine/data", "data");
+		Index index = Index.createIndex(ApplicationConfig.IndexPath, "data");
 		StringBuffer sb = new StringBuffer();
 		
 		sb.append(query);

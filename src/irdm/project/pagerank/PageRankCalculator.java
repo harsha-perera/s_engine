@@ -11,11 +11,7 @@ import java.util.Vector;
  * during the web crawl to calculate the page rank score.
  */
 public class PageRankCalculator {
-	
-	public HashMap<String, Double> calculatePageRank(WebGraph webGraph, int numberOfIterations){
-		return calculatePageRank(webGraph, numberOfIterations, 0.15);
-	}
-	
+		
 	public HashMap<String, Double> calculatePageRank(WebGraph webGraph, int numberOfIterations, double teleportProbability){		
 		double startingPageRank = 1.0/webGraph.getTotalPageCount();
 		HashMap<String, Double> pageRank = new HashMap<>(webGraph.getTotalPageCount());

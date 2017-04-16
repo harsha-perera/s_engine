@@ -8,19 +8,17 @@ import irdm.project.index.IndexBuilder;
 
 /**
  * @author Shruti Sinha
+ * @author Harsha Perera
  *
  */
 public class RunIndexing {
 	
-	public static String index_path = "C:/TerrierSearchEngine/data";
-	public static String url = "http://dynamicsimulationltd.com";
-
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		
-		IndexBuilder indexBuilder = new IndexBuilder(index_path, url, 10);
+		IndexBuilder indexBuilder = new IndexBuilder(ApplicationConfig.CrawlPath, ApplicationConfig.IndexPath, ApplicationConfig.SeedUrl, ApplicationConfig.CrawlMaxDepth);
 		indexBuilder.indexWebsite();
 		indexBuilder.writeIndex("data");
 	}

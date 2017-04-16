@@ -3,9 +3,14 @@
  */
 package irdm.project.index;
 
-import irdm.project.crawler.Crawler;
+import irdm.project.crawler.CrawlerFactory;
+import irdm.project.pagerank.PageRankCalculator;
+import irdm.project.pagerank.TerrierFeatureScoreWriter;
+import irdm.project.pagerank.WebGraph;
+import irdm.project.run.ApplicationConfig;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.terrier.realtime.memory.MemoryIndex;
 import org.terrier.utility.ApplicationSetup;
@@ -19,6 +24,7 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
 /**
  * @author Shruti Sinha
+ * @author Harsha Perera
  *
  */
 public class IndexBuilder {	
@@ -34,29 +40,30 @@ public class IndexBuilder {
 //		ApplicationSetup.setProperty("querying.postfilters.order", "org.terrier.querying.Decorate");
 	}
 	
-	private static int numberOfCrawlers = 3;
+	
 	
 	
 	private MemoryIndex memIndex; 
 	private String indexPath;
+	private String crawlPath;
 	private String url;
 	private int linkdepth;
 	
-	public IndexBuilder(String indexPath, String url, int linkdepth ){
+	public IndexBuilder(String crawlPath, String indexPath, String url, int linkdepth ){
 		if(indexPath != null){
 			ApplicationSetup.setProperty("terrier.home", indexPath);
 			ApplicationSetup.setProperty("terrier.index.path", indexPath);
 			this.indexPath = indexPath;
 		}	
 		
+		this.crawlPath = crawlPath;
 		this.url = url;
 		this.linkdepth = linkdepth;
 		
 		memIndex = new MemoryIndex();		
 	}
 	
-	public void writeIndex(String prefix) {
-		
+	public void writeIndex(String prefix) {		
 		try {
 			memIndex.write(indexPath, prefix);
 		} catch (IOException e) {
@@ -64,10 +71,10 @@ public class IndexBuilder {
 		}		
 	}
 	
-	public void indexWebsite() {		        
+	public void indexWebsite() {							
 
         CrawlConfig config = new CrawlConfig();
-        config.setCrawlStorageFolder(indexPath);
+        config.setCrawlStorageFolder(crawlPath);
         config.setMaxDepthOfCrawling(linkdepth);
     
         PageFetcher pageFetcher = new PageFetcher(config);
@@ -82,11 +89,22 @@ public class IndexBuilder {
      
         controller.addSeed(url);
 
+		WebGraph g = new WebGraph();
        
-        CustomIndexData customData = new CustomIndexData(url, memIndex);
-        controller.setCustomData(customData);        
+        //CustomIndexData customData = new CustomIndexData(url, memIndex);
+        //controller.setCustomData(customData);        
        
-        controller.start(Crawler.class, numberOfCrawlers);   		
+        controller.start(new CrawlerFactory(url, memIndex, g), ApplicationConfig.NumberOfCrawlers);   		
+        controller.waitUntilFinish();        
+		PageRankCalculator calc = new PageRankCalculator();
+		HashMap<String, Double> pageRank = calc.calculatePageRank(g, ApplicationConfig.PageRankMaxIterations, ApplicationConfig.PageRankTeleportProbability);
+        TerrierFeatureScoreWriter writer = new TerrierFeatureScoreWriter(indexPath);
+        try {
+			writer.PersistPageRankScores(pageRank, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 	
 

@@ -28,14 +28,7 @@ public class WebGraph {
 		outgoingUrls.put(url, outgoingLinks);
 		for (String targetUrl : outgoingLinks) {
 			outgoingUrls.computeIfAbsent(targetUrl, k -> new Vector<>());
-			/*if(!outgoingUrls.containsKey(targetUrl)){
-				outgoingUrls.put(targetUrl, new Vector<>());
-			}*/
 			Vector<String> incomingUrlsForTarget = incomingUrls.computeIfAbsent(targetUrl, k -> new Vector<>());
-			/*if(incomingUrlsForTarget == null){
-				incomingUrlsForTarget = new Vector<>();
-				incomingUrls.put(targetUrl, incomingUrlsForTarget);
-			}*/			
 			incomingUrlsForTarget.add(url);
 		}
 	}

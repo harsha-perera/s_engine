@@ -7,6 +7,8 @@ import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 import java.util.regex.Pattern;
 
 import org.terrier.indexing.TaggedDocument;
@@ -18,10 +20,11 @@ import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
-import irdm.project.index.CustomIndexData;
+import irdm.project.pagerank.WebGraph;
 
 /**
  * @author Shruti Sinha
+ * @author Harsha Perera
  *
  */
 public class Crawler extends WebCrawler{
@@ -42,6 +45,20 @@ public class Crawler extends WebCrawler{
 
     String hostname;
     MemoryIndex index;
+    
+    private WebGraph webGraph;
+    
+	/**
+	 * @param webGraph
+	 */
+	public Crawler(String hostName, MemoryIndex index, WebGraph webGraph) {
+		super();
+		this.hostname = hostName;
+		this.index = index;
+		this.webGraph = webGraph;
+	}
+    
+    
 
     public void init() {
     	synchronized (configurelock) {
@@ -51,9 +68,6 @@ public class Crawler extends WebCrawler{
     		ApplicationSetup.setProperty("TaggedDocument.abstracts.tags.casesensitive", "false");
     		
     		tokeniser = Tokeniser.getTokeniser();  		
-    		CustomIndexData data = (CustomIndexData)this.getMyController().getCustomData();
-    		hostname = data.getHosturl();
-    		index = data.getMemIndex();
     		configured=true;
     	}
     }
@@ -75,29 +89,39 @@ public class Crawler extends WebCrawler{
     	if (!configured) init();
     	String url = page.getWebURL().getURL();
     	System.out.println("URL: " + url);
+    	
+		if (!(page.getParseData() instanceof HtmlParseData)) {
+			return;
+		}		
 
-    	if (page.getParseData() instanceof HtmlParseData) {
-    		HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
-    		String html = htmlParseData.getHtml();
+		HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 
-    		Map<String,String> docProperties = new HashMap<String,String>();    		
-    		docProperties.put("url", url);
-    		docProperties.put("encoding", "UTF-8");
+		String html = htmlParseData.getHtml();
 
-    		ByteArrayInputStream inputStream = null;
-    		try {
-    			inputStream = new ByteArrayInputStream(html.getBytes("UTF-8"));
-    		} catch (UnsupportedEncodingException e1) {    			
-    			throw new AssertionError(e1);
-    		}
+		Map<String,String> docProperties = new HashMap<String,String>();    		
+		docProperties.put("url", url);
+		docProperties.put("encoding", "UTF-8");
 
-    		//TaggedDocument tg = new TaggedDocument(inputStream,docProperties,tokeniser,doctags,exacttags,fieldtags);
-    		TaggedDocument tg = new TaggedDocument(inputStream,docProperties,tokeniser);
-    		try {
-    			index.indexDocument(tg);
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    		}
-    	}
+		ByteArrayInputStream inputStream = null;
+		try {
+			inputStream = new ByteArrayInputStream(html.getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e1) {    			
+			throw new AssertionError(e1);
+		}
+
+		//TaggedDocument tg = new TaggedDocument(inputStream,docProperties,tokeniser,doctags,exacttags,fieldtags);
+		TaggedDocument tg = new TaggedDocument(inputStream,docProperties,tokeniser);
+		try {
+			index.indexDocument(tg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		Set<WebURL> links = htmlParseData.getOutgoingUrls();
+		Vector<String> outgoingLinks = new Vector<>(links.size());
+		for (WebURL webUrl : links) {
+			outgoingLinks.add(webUrl.getURL());
+		}
+		this.webGraph.addPage(url, outgoingLinks);		
     }
 }
