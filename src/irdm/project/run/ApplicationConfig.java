@@ -19,7 +19,7 @@ public class ApplicationConfig {
 	public static String SeedUrl = "http://mediagamma.com";
 	public static int NumberOfCrawlers = 3;
 	
-	public static boolean UsePageRank = false;
+	public static boolean UsePageRank = true;
 	// Maximum iterations to use in the power method when calculating the page rank
 	public static int PageRankMaxIterations = 10;
 	public static double PageRankTeleportProbability = 0.15;

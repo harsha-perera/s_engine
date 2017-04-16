@@ -30,9 +30,11 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 public class IndexBuilder {	
 	
 	static{
-		ApplicationSetup.setProperty("indexer.meta.forward.keys", "title,url,body");
-		ApplicationSetup.setProperty("indexer.meta.forward.keylens", "140,120,5000");
-		ApplicationSetup.setProperty("indexer.meta.reverse.keys", "url");
+		ApplicationSetup.setProperty("indexer.meta.forward.keys", "title,url,body,docno");
+		ApplicationSetup.setProperty("indexer.meta.forward.keylens", "140,200,5000,200");
+		ApplicationSetup.setProperty("indexer.meta.reverse.keys", "docno");
+		ApplicationSetup.setProperty("indexer.meta.reverse.keylens", "200");
+		
 		ApplicationSetup.setProperty("metaindex.crop", "true");
 		ApplicationSetup.setProperty("ignore.low.idf.terms", "false");
 //		ApplicationSetup.setProperty("querying.default.controls", "start,end,decorate:on,summaries:content,emphasis:title;content");
