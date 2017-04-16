@@ -13,17 +13,16 @@ import java.io.*;
  *         SimpleStaticScoreModifier class in the Terrier search engine.
  */
 public class TerrierFeatureScoreWriter {
+	
+	String pageRankScoreFileName;
 
-	String indexFileFolder;
-
-	public TerrierFeatureScoreWriter(String indexFileFolder) {
-		this.indexFileFolder = indexFileFolder;
+	public TerrierFeatureScoreWriter(String pageRankScoreFileName) {
+		this.pageRankScoreFileName = pageRankScoreFileName;
 	}
 
 	public void PersistPageRankScores(HashMap<String, Double> pageRankScores, boolean overwrite) throws IOException {
-		String indexFileName = indexFileFolder + File.separator + "PageRankScores.dat";
 
-		File file = new File(indexFileName);
+		File file = new File(pageRankScoreFileName);
 
 		if (file.exists()) {
 			file.delete();

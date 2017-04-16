@@ -98,7 +98,7 @@ public class IndexBuilder {
         controller.waitUntilFinish();        
 		PageRankCalculator calc = new PageRankCalculator();
 		HashMap<String, Double> pageRank = calc.calculatePageRank(g, ApplicationConfig.PageRankMaxIterations, ApplicationConfig.PageRankTeleportProbability);
-        TerrierFeatureScoreWriter writer = new TerrierFeatureScoreWriter(indexPath);
+        TerrierFeatureScoreWriter writer = new TerrierFeatureScoreWriter(ApplicationConfig.PageRankScoreFilePath);
         try {
 			writer.PersistPageRankScores(pageRank, true);
 		} catch (IOException e) {
