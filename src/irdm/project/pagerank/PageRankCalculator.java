@@ -12,7 +12,8 @@ import java.util.Vector;
  */
 public class PageRankCalculator {
 		
-	public HashMap<String, Double> calculatePageRank(WebGraph webGraph, int numberOfIterations, double teleportProbability){		
+	public HashMap<String, Double> calculatePageRank(WebGraph webGraph, int numberOfIterations, double teleportProbability){
+		double rankFromTeleport = teleportProbability/webGraph.getTotalPageCount();		
 		double startingPageRank = 1.0/webGraph.getTotalPageCount();
 		HashMap<String, Double> pageRank = new HashMap<>(webGraph.getTotalPageCount());
 		Set<String> allUrls = webGraph.getAllUrls();
@@ -30,10 +31,10 @@ public class PageRankCalculator {
 					// Add the weight given by this incoming link
 					rankFromIncomingLinks += pageRank.get(incomingLink).doubleValue()/webGraph.getOutgoingLinks(incomingLink).size();
 				}
-				nextPageRank.put(url, teleportProbability + (1-teleportProbability)*rankFromIncomingLinks);
+				nextPageRank.put(url, rankFromTeleport + (1-teleportProbability)*rankFromIncomingLinks);
 			}			
 			pageRank = nextPageRank;
-		}
+		}	
 		return pageRank;
 	}
 
